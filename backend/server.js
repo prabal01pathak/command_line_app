@@ -1,25 +1,34 @@
 import express from "express";
+import bodyParser from "body-parser";
 import cors from "cors";
-import { Logger } from "./middlewares/logging.js"
+import { handleRequest, color } from "./middlewares/logging.js"
 
 const app = express()
 
 // initilized logger class
-const logger = new Logger()
 const port = process.env.PORT || 8000
 
 // cors middleware
 app.use(cors())
+app.use(bodyParser.json())
 
 // logging middleware
-app.use(logger.handle_request)
+app.use(handleRequest)
 
 app.get("/", (req, res, next) => {
+  console.log(req)
   res.json({ message: "How are you" })
 })
 
+app.post("/", (req, res, next) => {
+  let message = req.body.message
+  let file = req.body.file
+  console.log(file)
+  res.send({ message: `Hi there your message is ${message}` })
+})
+
 async function message() {
-  console.log(`${logger.color(`Server is running on the port: ${port}`, "info2")}`);
+  console.log(`${color(`Server is running on the port: ${port}`, "info2")}`);
 }
 
 app.listen(8000, message)
